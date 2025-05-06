@@ -48,7 +48,6 @@ jobs:
     needs: build
     environment:
       name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write
       contents: read
@@ -74,4 +73,3 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'constitutional-repository'
-          slot-name: 'Production'
