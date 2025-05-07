@@ -22,11 +22,11 @@ jobs:
 
       - name: Set up build tools
         run: |
-          # Install essential build tools and libraries (including compilers and dependencies for scikit-learn)
+          # Update and install essential build tools and libraries (including compilers and dependencies for scikit-learn)
           sudo apt-get update
           sudo apt-get install -y build-essential libatlas-base-dev gfortran python3-dev
-          # Install distutils (sometimes required for building C extensions)
-          sudo apt-get install python3-distutils
+          # Install setuptools (modern replacement for distutils)
+          sudo apt-get install -y python3-setuptools
           # Ensure pip, setuptools, and wheel are up to date
           python -m ensurepip --upgrade
           pip install --upgrade pip setuptools wheel
