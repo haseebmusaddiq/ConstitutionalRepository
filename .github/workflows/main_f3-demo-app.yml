@@ -10,48 +10,34 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up Python version
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Set up build tools
+      - name: Upgrade pip and build tools
         run: |
-          # Update and install essential build tools and libraries (including compilers and dependencies for scikit-learn)
-          sudo apt-get update
-          sudo apt-get install -y build-essential libatlas-base-dev gfortran python3-dev
-          # Install setuptools (modern replacement for distutils)
-          sudo apt-get install -y python3-setuptools
-          # Ensure pip, setuptools, and wheel are up to date
-          python -m ensurepip --upgrade
-          pip install --upgrade pip setuptools wheel
-
-      - name: Create and start virtual environment
-        run: |
-          python -m venv venv
-          source venv/bin/activate
+          python -m pip install --upgrade pip setuptools wheel
 
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
 
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
+      - name: Zip project for deployment
+        run: |
+          zip -r release.zip . -x "venv/*" ".git/*" ".github/*"
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
-
-      - name: Upload artifact for deployment jobs
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-app
-          path: |
-            release.zip
-            !venv/
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -60,16 +46,16 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: python-app
 
-      - name: Unzip artifact for deployment
+      - name: Unzip artifact
         run: unzip release.zip
 
       - name: Login to Azure
@@ -79,8 +65,9 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_371AE728FB3B4203BE7D042AFE3B34BE }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7534376C423742388C3F487BD916B76D }}
 
-      - name: 'Deploy to Azure Web App'
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
           app-name: 'f3-demo-app'
+          package: release.zip
