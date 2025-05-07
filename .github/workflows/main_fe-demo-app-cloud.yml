@@ -77,5 +77,4 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'fe-demo-app-cloud'
-          slot-name: 'Production'
           
