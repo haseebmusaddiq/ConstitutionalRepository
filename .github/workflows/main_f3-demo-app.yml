@@ -21,17 +21,17 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Upgrade pip and build tools
+      - name: Set up virtual environment and install dependencies
         run: |
+          python -m venv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip setuptools wheel
-
-      - name: Install dependencies
-        run: |
           pip install -r requirements.txt
+          deactivate
 
-      - name: Zip project for deployment
+      - name: Zip project for deployment (excluding unnecessary files)
         run: |
-          zip -r release.zip . -x "venv/*" ".git/*" ".github/*"
+          zip -r release.zip . -x "*.git*" "venv/*" ".github/*" "*.zip" "__pycache__/*"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
