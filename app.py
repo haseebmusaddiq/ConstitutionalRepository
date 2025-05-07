@@ -463,24 +463,21 @@ def index_status():
             'message': f"Failed to check index status: {str(e)}"
         }), 500
 if __name__== '__main__':
-    # Run the app in debug mode but with specific reloader settings
+    # Run the app without debug mode to avoid WERKZEUG_SERVER_FD error
     print("[INFO] Starting Flask application")
-    
-    # Set environment variable to exclude patterns from reloading
-    # This prevents Flask from reloading when CodeQL creates or modifies files
-    os.environ['FLASK_RUN_EXTRA_FILES'] = ''
-    os.environ['FLASK_RUN_EXCLUDE_PATTERNS'] = '/tmp/*:*/temp/*:*/db/*:*/code/*:*/logs/*'
-    
-    # Use the stat reloader instead of watchdog
-    os.environ['WERKZEUG_RUN_MAIN'] = 'true'  # Prevent double execution
-    os.environ['FLASK_DEBUG'] = '0'  # Disable Flask's own reloader
-    
-    # Run with debug=True but use_reloader=False
-    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
-
-
-
-
+    try:
+        # First try with debug mode disabled
+        app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False, use_debugger=False)
+    except Exception as e:
+        print(f"[ERROR] Failed to start Flask app: {e}")
+        # If that fails, try with a different configuration
+        try:
+            from werkzeug.serving import run_simple
+            print("[INFO] Attempting to start with werkzeug.serving.run_simple")
+            run_simple('0.0.0.0', 5000, app, use_debugger=False, use_reloader=False)
+        except Exception as e2:
+            print(f"[ERROR] Failed to start with run_simple: {e2}")
+            print("[INFO] Please try running with: flask --app app run --host=0.0.0.0 --port=5000")
 
 
 

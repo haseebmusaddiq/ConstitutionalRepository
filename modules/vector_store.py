@@ -452,3 +452,20 @@ class VectorStore:
                 print(f"[ERROR] Error in fallback search: {e2}")
                 return []
 
+    def is_initialized(self):
+        """Check if the vector store has been initialized with documents"""
+        print("[DEBUG] Checking if vector store is initialized")
+        # Check if we have documents and an index
+        is_init = self.index is not None and len(self.documents) > 0
+        print(f"[DEBUG] Vector store initialized: {is_init}")
+        return is_init
+
+    def get_document_count(self):
+        """Get the number of documents in the store"""
+        print("[DEBUG] Getting document count")
+        count = len(self.documents) if self.documents else 0
+        print(f"[DEBUG] Document count: {count}")
+        return count
+
+
+

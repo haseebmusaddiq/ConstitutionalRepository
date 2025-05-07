@@ -6,6 +6,7 @@ import gc
 import torch
 from typing import List, Union, Optional
 
+
 class EmbeddingManager:
     def __init__(self, model_name: str = 'all-MiniLM-L6-v2', use_multiprocessing: bool = False, device: Optional[str] = None):
         """
@@ -63,9 +64,10 @@ class EmbeddingManager:
                 'normalize_embeddings': True,  # Normalize for cosine similarity
             }
             
+            # Remove num_workers parameter as it's not supported
             if not self.use_multiprocessing:
                 print("[DEBUG] Multiprocessing disabled")
-                encode_params['num_workers'] = 0
+                # Don't add num_workers parameter
             
             # Process in smaller batches if there are many texts
             if len(texts) > 1000:
@@ -203,5 +205,6 @@ class EmbeddingManager:
         except Exception as e:
             print(f"[ERROR] Error in __del__: {e}")
             traceback.print_exc()
+
 
 
