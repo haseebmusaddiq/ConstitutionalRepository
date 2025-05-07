@@ -22,10 +22,12 @@ jobs:
 
       - name: Set up build tools
         run: |
+          # Install essential build tools (including compilers)
           sudo apt-get update
-          sudo apt-get install -y build-essential libatlas-base-dev gfortran
-          python -m ensurepip
-          pip install --upgrade pip setuptools==58.0.4 wheel
+          sudo apt-get install -y build-essential libatlas-base-dev gfortran python3-dev
+          # Ensure pip and setuptools are up-to-date
+          python -m ensurepip --upgrade
+          pip install --upgrade pip setuptools wheel
 
       - name: Create and start virtual environment
         run: |
@@ -33,8 +35,9 @@ jobs:
           source venv/bin/activate
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
-        
+        run: |
+          pip install -r requirements.txt
+
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
       - name: Zip artifact for deployment
