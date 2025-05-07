@@ -1,12 +1,12 @@
-# Core dependencies
 flask==2.0.1
-numpy<1.24             # Downgraded to avoid missing numpy.distutils
 python-dotenv==0.19.0
-scikit-learn==1.2.2    # Downgraded to match numpy<1.24 compatibility
+scikit-learn==1.0.0
+numpy==1.21.2
 nltk==3.6.3
 werkzeug==2.0.1
 PyPDF2==3.0.1
 python-docx==0.8.11
-huggingface_hub
-faiss-cpu
+
+
+
 
