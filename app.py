@@ -462,6 +462,11 @@ def index_status():
             'status': 'error',
             'message': f"Failed to check index status: {str(e)}"
         }), 500
+@app.route('/dashboard')
+def dashboard():
+    """Render the main dashboard page"""
+    print("[DEBUG] Dashboard route accessed")
+    return render_template('dashboard.html')
 if __name__== '__main__':
     # Run the app without debug mode to avoid WERKZEUG_SERVER_FD error
     print("[INFO] Starting Flask application")
@@ -478,6 +483,7 @@ if __name__== '__main__':
         except Exception as e2:
             print(f"[ERROR] Failed to start with run_simple: {e2}")
             print("[INFO] Please try running with: flask --app app run --host=0.0.0.0 --port=5000")
+
 
 
 
